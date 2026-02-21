@@ -1,6 +1,6 @@
 {
   "id": "flight-search",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "agent",
   "interface": {
     "input": { "$ref": "./schema.ts#FlightSearchInputSchema" },
@@ -10,6 +10,23 @@
     "kiwi": {
       "url": "https://mcp.kiwi.com"
     }
+  },
+  "skills": {
+    "path": "skills",
+    "expose": ["price-analysis", "recommendation"]
+  },
+  "tools": {
+    "source": "mcp",
+    "allowlist": ["kiwi_search", "kiwi_book"]
+  },
+  "progress": {
+    "aiDriven": true,
+    "fallbackSteps": [
+      { "name": "parsing", "weight": 10 },
+      { "name": "searching", "weight": 60 },
+      { "name": "ranking", "weight": 20 },
+      { "name": "formatting", "weight": 10 }
+    ]
   },
   "config": {
     "tier": "balanced",

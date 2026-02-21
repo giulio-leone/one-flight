@@ -41,8 +41,8 @@
     "test:agent": "tsx test-sdk-agent.ts"
   },
   "dependencies": {
-    "ai": "6.0.19",
-    "zod": "4.3.4"
+    "ai": "6.0.77",
+    "zod": "4.3.6"
   },
   "peerDependencies": {
     "@onecoach/lib-ai": "workspace:*",
