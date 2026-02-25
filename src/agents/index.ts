@@ -16,7 +16,8 @@
  * ```
  */
 
-import { execute as sdkExecute, createInMemoryAdapter, type PersistenceAdapter } from '@onecoach/one-agent/framework';
+import { execute as sdkExecute, createInMemoryAdapter } from '@onecoach/one-agent/framework';
+import type { PersistenceAdapter } from '@giulio-leone/agent-contracts';
 // Side-effect import to register schemas in the SDK registry
 import '../sdk-agents/flight-search/schema';
 import type { FlightSearchInput as SDKFlightSearchInput, FlightSearchOutput } from '../sdk-agents/flight-search/schema';

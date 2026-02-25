@@ -41,6 +41,7 @@
     "test:agent": "tsx test-sdk-agent.ts"
   },
   "dependencies": {
+    "@giulio-leone/agent-contracts": "workspace:*",
     "ai": "6.0.77",
     "zod": "4.3.6"
   },
