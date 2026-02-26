@@ -1,5 +1,5 @@
 {
-  "name": "@onecoach/lib-flight",
+  "name": "@giulio-leone/one-flight",
   "version": "0.1.0",
   "description": "OneFlight - Flight search and deal finding for OneCoach",
   "type": "module",
@@ -46,25 +46,15 @@
     "zod": "4.3.6"
   },
   "peerDependencies": {
-    "@onecoach/lib-ai": "workspace:*",
-    "@onecoach/lib-shared": "workspace:*",
-    "@onecoach/one-agent": "workspace:*",
-    "@onecoach/types-core": "workspace:*",
-    "@onecoach/types-workout": "workspace:*",
-    "@onecoach/types-nutrition": "workspace:*",
-    "@onecoach/types-chat": "workspace:*",
-    "@onecoach/types-analytics": "workspace:*",
-    "@onecoach/types-ai": "workspace:*",
-    "@onecoach/types-ui": "workspace:*",
-    "@onecoach/types-domain": "workspace:*",
-    "@onecoach/types-database": "workspace:*"
+    "@giulio-leone/lib-ai": "workspace:*",
+    "@giulio-leone/lib-shared": "workspace:*",
+    "@giulio-leone/one-agent": "workspace:*"
   },
   "devDependencies": {
-    "@onecoach/contracts": "workspace:*",
-    "@onecoach/lib-core": "workspace:*",
-    "@onecoach/lib-mcp-server": "workspace:*",
-    "@onecoach/lib-validation": "workspace:*",
-    "@onecoach/schemas": "workspace:*",
+    "@giulio-leone/agent-contracts": "workspace:*",
+    "@giulio-leone/lib-core": "workspace:*",
+    "@giulio-leone/lib-mcp-server": "workspace:*",
+    "@giulio-leone/schemas": "workspace:*",
     "@types/node": "^25.0.3",
     "tsup": "^8.5.1",
     "tsx": "^4.19.2",

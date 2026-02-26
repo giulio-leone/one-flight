@@ -1,5 +1,5 @@
 /**
- * @onecoach/lib-flight
+ * @giulio-leone/one-flight
  *
  * Flight search and deal finding for OneCoach.
  * Consolidated from apps/next, lib-ai-agents, and lib-mcp-server.

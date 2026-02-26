@@ -8,8 +8,8 @@ export default defineConfig({
     'tools/index': 'src/tools/index.ts',
   },
   format: ['esm'],
-  dts: true,
+  dts: false,
   sourcemap: true,
   clean: true,
-  external: ['@onecoach/lib-ai', '@onecoach/lib-shared', '@onecoach/types'],
+  external: ['@giulio-leone/lib-ai', '@giulio-leone/lib-shared', '@giulio-leone/types'],
 });

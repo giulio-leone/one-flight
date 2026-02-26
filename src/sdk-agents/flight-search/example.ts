@@ -6,8 +6,10 @@
 
 import {
   execute,
+} from '@giulio-leone/one-agent/framework/engine';
+import {
   createInMemoryAdapter,
-} from '@onecoach/one-agent/framework';
+} from '@giulio-leone/one-agent/framework/persistence';
 import type { FlightSearchInput, FlightSearchOutput } from './schema';
 
 /**

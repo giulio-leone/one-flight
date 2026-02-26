@@ -8,8 +8,9 @@
  * Integrates with the centralized AI model system from admin settings.
  */
 
-import { execute } from '@onecoach/one-agent/framework';
+import { execute } from '@giulio-leone/one-agent/framework/engine';
 import type { FlightResult } from '../types';
+import type { FlightExecutionResult } from '../agents';
 import { resolve } from 'path';
 import { initializeFlightSchemas } from '../registry';
 
@@ -235,10 +236,7 @@ export async function smartFlightSearch(
     const result = await execute<FlightSearchOutput>('sdk-agents/flight-search', input, {
       userId,
       basePath,
-    });
-
-    // Check for durable execution result (SDK v4.0)
-    const durableResult = result as typeof result & {
+    }) as unknown as FlightExecutionResult<FlightSearchOutput> & {
       workflowRunId?: string;
       workflowStatus?: string;
     };
@@ -251,8 +249,8 @@ export async function smartFlightSearch(
           hasOutput: !!result.output,
           error: result.error,
           meta: result.meta,
-          workflowRunId: durableResult.workflowRunId,
-          workflowStatus: durableResult.workflowStatus,
+          workflowRunId: result.workflowRunId,
+          workflowStatus: result.workflowStatus,
         },
         null,
         2
@@ -274,8 +272,8 @@ export async function smartFlightSearch(
           tokensUsed: result.meta.tokensUsed,
           costUSD: result.meta.costUSD,
         },
-        workflowRunId: durableResult.workflowRunId,
-        workflowStatus: durableResult.workflowStatus as SmartSearchResult['workflowStatus'],
+        workflowRunId: result.workflowRunId,
+        workflowStatus: result.workflowStatus as SmartSearchResult['workflowStatus'],
       };
     }
 
@@ -293,8 +291,8 @@ export async function smartFlightSearch(
         costUSD: result.meta.costUSD,
       },
       // Include workflowRunId even on failure for resume capability
-      workflowRunId: durableResult.workflowRunId,
-      workflowStatus: durableResult.workflowStatus as SmartSearchResult['workflowStatus'],
+      workflowRunId: result.workflowRunId,
+      workflowStatus: result.workflowStatus as SmartSearchResult['workflowStatus'],
     };
   } catch (error) {
     console.error('[SmartSearch] ❌ Exception caught:', error);

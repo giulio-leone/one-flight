@@ -6,11 +6,11 @@
  *
  * @example
  * // In apps/next/instrumentation.ts or similar
- * import { initializeFlightSchemas } from '@onecoach/one-flight';
+ * import { initializeFlightSchemas } from '@giulio-leone/one-flight';
  * initializeFlightSchemas();
  */
 
-import { registerSchemas, registerTools } from '@onecoach/one-agent/framework';
+import { registerSchemas, registerTools } from '@giulio-leone/one-agent/framework';
 import {
   FlightSearchInputSchema,
   FlightSearchOutputSchema,

@@ -19,7 +19,7 @@ async function testFlightSearch() {
   console.log('━'.repeat(80));
 
   // Dynamic import per evitare problemi di build al parse time
-  const { execute } = await import('@onecoach/one-agent/framework');
+  const { execute } = await import('@giulio-leone/one-agent/framework');
   const schemas = await import('./src/sdk-agents/flight-search/schema.js');
   
   const { FlightSearchInputSchema, FlightSearchOutputSchema } = schemas;

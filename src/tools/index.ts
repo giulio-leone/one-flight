@@ -7,7 +7,7 @@
 
 // MCP flight tools are in onecoach-backend/lib-mcp-server
 // Re-export when needed:
-// export { kiwiSearchFlightTool } from '@onecoach/lib-mcp-server';
+// export { kiwiSearchFlightTool } from '@giulio-leone/lib-mcp-server';
 
 // For now, this module is a placeholder for future consolidation
 export {};
