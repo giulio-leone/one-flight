@@ -62,5 +62,9 @@
   },
   "sideEffects": [
     "./src/sdk-agents/*/schema.ts"
-  ]
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  }
 }
