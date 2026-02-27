@@ -71,7 +71,7 @@ export async function executeFlightSearch(
     }
   );
 
-  return result as unknown as FlightExecutionResult<FlightSearchOutput>;
+  return result as FlightExecutionResult<FlightSearchOutput>;
 }
 
 

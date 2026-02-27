@@ -236,7 +236,7 @@ export async function smartFlightSearch(
     const result = await execute<FlightSearchOutput>('sdk-agents/flight-search', input, {
       userId,
       basePath,
-    }) as unknown as FlightExecutionResult<FlightSearchOutput> & {
+    }) as FlightExecutionResult<FlightSearchOutput> & {
       workflowRunId?: string;
       workflowStatus?: string;
     };
