@@ -9,9 +9,9 @@
  */
 
 import { execute } from '@giulio-leone/one-agent/framework/engine';
+import { createLazyService } from '@giulio-leone/lib-shared';
 import type { FlightResult } from '../types';
 import type { FlightExecutionResult } from '../agents';
-import { resolve } from 'path';
 import { initializeFlightSchemas } from '../registry';
 
 // =============================================================================
@@ -105,18 +105,18 @@ export interface SmartSearchResult {
 // Service State
 // =============================================================================
 
-let isInitialized = false;
-let basePath: string = '';
+const service = createLazyService({
+  name: 'SmartSearch',
+  defaultSubpath: 'submodules/one-flight/src',
+  setup: () => initializeFlightSchemas(),
+});
 
 /**
  * Get the basePath for the smart search agent.
  * Call initializeSmartSearch() first, or this will auto-initialize.
  */
 export function getSmartSearchBasePath(): string {
-  if (!isInitialized) {
-    initializeSmartSearch();
-  }
-  return basePath;
+  return service.ensureInitialized();
 }
 
 /**
@@ -126,18 +126,8 @@ export function getSmartSearchBasePath(): string {
  * In Next.js, process.cwd() returns apps/next, so we go up to monorepo root
  */
 export function initializeSmartSearch(options: { basePath?: string } = {}): void {
-  if (isInitialized) return;
-
-  // Register flight schemas with SDK registry (required for bundled envs)
-  initializeFlightSchemas();
-
-  // Use provided basePath, or construct from monorepo root
-  // process.cwd() in Next.js = /path/to/CoachOne/apps/next
-  // We need: /path/to/CoachOne/submodules/one-flight/src
-  // So: go up 2 levels (../../) then into submodules
-  basePath = options.basePath ?? resolve(process.cwd(), '../../submodules/one-flight/src');
-  isInitialized = true;
-  console.log('[SmartSearch] Initialized with basePath:', basePath);
+  service.ensureInitialized(options);
+  console.log('[SmartSearch] Initialized with basePath:', service.getBasePath());
 }
 
 // =============================================================================
@@ -216,9 +206,10 @@ export async function smartFlightSearch(
   input: FlightSearchInput,
   userId: string
 ): Promise<SmartSearchResult> {
-  if (!isInitialized) {
+  if (!service.isInitialized()) {
     initializeSmartSearch();
   }
+  const basePath = service.getBasePath();
 
   const startTime = Date.now();
 
