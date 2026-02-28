@@ -95,7 +95,7 @@ export class FlightSearchService {
         const [outboundResults, returnResults] = await Promise.all([
           this.executeDirectionalSearch(searchPairs, normalizedDepartureDate, 'outbound'),
           this.executeDirectionalSearch(
-            searchPairs.map((p) => ({ from: p.to, to: p.from })), // Swap direction
+            searchPairs.map((p: any) => ({ from: p.to, to: p.from })), // Swap direction
             normalizedReturnDate!,
             'return'
           ),
@@ -142,7 +142,7 @@ export class FlightSearchService {
     date: string,
     direction: FlightDirection
   ): Promise<FlightResult[]> {
-    const searchPromises = pairs.map((pair) =>
+    const searchPromises = pairs.map((pair: any) =>
       this.executeSingleSearch(pair.from, pair.to, date, null) // No return date for single-leg
     );
 
@@ -200,7 +200,7 @@ export class FlightSearchService {
       }
 
       // Map SDK output to FlightResult format
-      const flights: FlightResult[] = result.output.outbound.map((flight) => ({
+      const flights: FlightResult[] = result.output.outbound.map((flight: any) => ({
         id: flight.id,
         flyFrom: flight.flyFrom,
         flyTo: flight.flyTo,
@@ -212,7 +212,7 @@ export class FlightSearchService {
         price: flight.price,
         currency: flight.currency,
         deepLink: flight.deepLink,
-        layovers: flight.layovers?.map(l => ({
+        layovers: flight.layovers?.map((l: any) => ({
           at: l.at,
           city: l.city,
           cityCode: l.cityCode,

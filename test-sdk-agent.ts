@@ -154,7 +154,7 @@ async function testFlightSearch() {
 }
 
 // Run test
-testFlightSearch().catch((error) => {
+testFlightSearch().catch((error: unknown) => {
   console.error('Unhandled error:', error);
   process.exit(1);
 });

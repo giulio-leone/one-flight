@@ -152,9 +152,9 @@ function enrichOutputWithDeepLinks(output: FlightSearchOutput): FlightSearchOutp
 
   // Helper to enrich a single recommendation
   const enrichRec = (rec: FlightRecommendation): FlightRecommendation => {
-    const outboundFlight = allFlights.find((f) => f.id === rec.outboundFlightId);
+    const outboundFlight = allFlights.find((f: any) => f.id === rec.outboundFlightId);
     const returnFlight = rec.returnFlightId
-      ? allFlights.find((f) => f.id === rec.returnFlightId)
+      ? allFlights.find((f: any) => f.id === rec.returnFlightId)
       : undefined;
 
     // If deepLink is already present, keep it (unless it's empty)
