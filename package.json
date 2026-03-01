@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@giulio-leone/agent-contracts": "workspace:*",
-    "ai": "6.0.77",
+    "ai": "6.0.105",
     "zod": "4.3.6"
   },
   "peerDependencies": {
