@@ -1,22 +1,11 @@
 /**
  * Smart Flight Search Service
  *
- * Uses the OneAgent SDK v3.0 to execute the flight-search agent.
- * The agent uses ToolLoopAgent with MCP tools (Kiwi) for flight data
- * and AI analysis for recommendations.
- *
- * Integrates with the centralized AI model system from admin settings.
+ * @deprecated Legacy SDK removed. Flight search is now handled by Gauss FlightAgent
+ * via the supervisor delegation in gauss-agents. This file is kept for type exports only.
  */
 
-// Legacy one-agent SDK execute() removed — migrating to Gauss Agent.run()
-// This function is kept for backward compatibility but the underlying SDK is deprecated.
-async function execute<T>(_agentPath: string, _input: unknown, _options?: unknown): Promise<{ success: boolean; output?: T; error?: { message: string; code: string }; meta: { executionId: string; duration: number; tokensUsed: number; costUSD: number }; workflowRunId?: string; workflowStatus?: string }> {
-  throw new Error('Legacy one-agent SDK execute() removed. Migrate to Gauss Agent.run().');
-}
-import { createLazyService } from '@giulio-leone/lib-shared';
 import type { FlightResult } from '../types';
-import type { FlightExecutionResult } from '../agents';
-import { initializeFlightSchemas } from '../registry';
 
 // =============================================================================
 // Types
@@ -106,210 +95,18 @@ export interface SmartSearchResult {
 }
 
 // =============================================================================
-// Service State
-// =============================================================================
-
-const service = createLazyService({
-  name: 'SmartSearch',
-  defaultSubpath: 'submodules/one-flight/src',
-  setup: () => initializeFlightSchemas(),
-});
-
-/**
- * Get the basePath for the smart search agent.
- * Call initializeSmartSearch() first, or this will auto-initialize.
- */
-export function getSmartSearchBasePath(): string {
-  return service.ensureInitialized();
-}
-
-/**
- * Initialize the smart search service
- *
- * The basePath should point to the directory containing sdk-agents/
- * In Next.js, process.cwd() returns apps/next, so we go up to monorepo root
- */
-export function initializeSmartSearch(options: { basePath?: string } = {}): void {
-  service.ensureInitialized(options);
-  console.log('[SmartSearch] Initialized with basePath:', service.getBasePath());
-}
-
-// =============================================================================
-// Helper Function (Hoisted)
+// Main Function (deprecated — throws at runtime)
 // =============================================================================
 
 /**
- * Helper to populate deepLinks in recommendations by looking up flight IDs
- */
-function enrichOutputWithDeepLinks(output: FlightSearchOutput): FlightSearchOutput {
-  const allFlights = [...output.outbound, ...(output.return || [])];
-
-  // Helper to enrich a single recommendation
-  const enrichRec = (rec: FlightRecommendation): FlightRecommendation => {
-    const outboundFlight = allFlights.find((f: any) => f.id === rec.outboundFlightId);
-    const returnFlight = rec.returnFlightId
-      ? allFlights.find((f: any) => f.id === rec.returnFlightId)
-      : undefined;
-
-    // If deepLink is already present, keep it (unless it's empty)
-    if (rec.deepLink && rec.deepLink.length > 0) return rec;
-
-    // Construct deep links
-    const outboundLink = outboundFlight?.deepLink;
-    const returnLink = returnFlight?.deepLink;
-
-    // For round trips (both flights present)
-    if (outboundFlight && returnFlight) {
-      // If the outbound flight is actually a round-trip itinerary (Kiwi often returns this),
-      // then its deepLink covers both. We can check if returnFlight has the same deepLink
-      // or if outboundFlight.deepLink looks like a composite.
-      //
-      // HEURISTIC: Use outbound link as the main deepLink if it exists.
-      // Ideally, we'd have a combined link.
-      return {
-        ...rec,
-        outboundDeepLink: outboundLink,
-        returnDeepLink: returnLink,
-        // Default to outbound link for the main CTA, assuming it's the primary booking anchor
-        deepLink: outboundLink,
-      };
-    }
-
-    // For one-way or single flight found
-    if (outboundFlight) {
-      return {
-        ...rec,
-        outboundDeepLink: outboundLink,
-        deepLink: outboundLink,
-      };
-    }
-
-    return rec;
-  };
-
-  return {
-    ...output,
-    recommendation: enrichRec(output.recommendation),
-    alternatives: output.alternatives?.map(enrichRec),
-  };
-}
-
-// =============================================================================
-// Main Function
-// =============================================================================
-
-/**
- * Execute a smart flight search using the OneAgent SDK
- *
- * This calls the flight-search agent which:
- * 1. Uses ToolLoopAgent to call Kiwi MCP tools for flight data
- * 2. Analyzes the results using AI
- * 3. Generates recommendations based on user preferences
+ * @deprecated Use Gauss FlightAgent via supervisor delegation instead.
+ * This function is kept for API compatibility but always throws.
  */
 export async function smartFlightSearch(
-  input: FlightSearchInput,
-  userId: string
+  _input: FlightSearchInput,
+  _userId: string
 ): Promise<SmartSearchResult> {
-  if (!service.isInitialized()) {
-    initializeSmartSearch();
-  }
-  const basePath = service.getBasePath();
-
-  const startTime = Date.now();
-
-  console.log('[SmartSearch] Starting smart flight search...');
-  console.log('[SmartSearch] basePath:', basePath);
-  console.log('[SmartSearch] userId:', userId);
-  console.log('[SmartSearch] input:', JSON.stringify(input, null, 2));
-
-  try {
-    console.log('[SmartSearch] Calling execute() with agentPath: sdk-agents/flight-search');
-    console.log('[SmartSearch] input keys:', Object.keys(input));
-
-    // Execute the flight-search agent via SDK
-    // SDK v4.0: If agent is in durable mode, result includes workflowRunId
-    const result = await execute<FlightSearchOutput>('sdk-agents/flight-search', input, {
-      userId,
-      basePath,
-    }) as FlightExecutionResult<FlightSearchOutput> & {
-      workflowRunId?: string;
-      workflowStatus?: string;
-    };
-
-    console.log(
-      '[SmartSearch] execute() returned:',
-      JSON.stringify(
-        {
-          success: result.success,
-          hasOutput: !!result.output,
-          error: result.error,
-          meta: result.meta,
-          workflowRunId: result.workflowRunId,
-          workflowStatus: result.workflowStatus,
-        },
-        null,
-        2
-      )
-    );
-
-    if (result.success && result.output) {
-      console.log('[SmartSearch] ✅ Success! Returning data...');
-
-      // Post-process recommendations to ensure deepLinks are populated
-      const enrichedOutput = enrichOutputWithDeepLinks(result.output);
-
-      return {
-        success: true,
-        data: enrichedOutput,
-        meta: {
-          executionId: result.meta.executionId,
-          durationMs: result.meta.duration,
-          tokensUsed: result.meta.tokensUsed,
-          costUSD: result.meta.costUSD,
-        },
-        workflowRunId: result.workflowRunId,
-        workflowStatus: result.workflowStatus as SmartSearchResult['workflowStatus'],
-      };
-    }
-
-    console.log('[SmartSearch] ❌ execute() returned failure:', result.error);
-    return {
-      success: false,
-      error: {
-        message: result.error?.message ?? 'Unknown error occurred',
-        code: result.error?.code ?? 'UNKNOWN_ERROR',
-      },
-      meta: {
-        executionId: result.meta.executionId,
-        durationMs: result.meta.duration,
-        tokensUsed: result.meta.tokensUsed,
-        costUSD: result.meta.costUSD,
-      },
-      // Include workflowRunId even on failure for resume capability
-      workflowRunId: result.workflowRunId,
-      workflowStatus: result.workflowStatus as SmartSearchResult['workflowStatus'],
-    };
-  } catch (error) {
-    console.error('[SmartSearch] ❌ Exception caught:', error);
-    console.error('[SmartSearch] Error name:', error instanceof Error ? error.name : 'N/A');
-    console.error(
-      '[SmartSearch] Error message:',
-      error instanceof Error ? error.message : String(error)
-    );
-    console.error('[SmartSearch] Error stack:', error instanceof Error ? error.stack : 'N/A');
-
-    return {
-      success: false,
-      error: {
-        message: error instanceof Error ? error.message : String(error),
-        code: 'EXECUTION_ERROR',
-      },
-      meta: {
-        executionId: `error-${Date.now()}`,
-        durationMs: Date.now() - startTime,
-        tokensUsed: 0,
-        costUSD: 0,
-      },
-    };
-  }
+  throw new Error(
+    '[SmartSearch] Legacy SDK removed. Use Gauss FlightAgent via the CoachNetwork supervisor.'
+  );
 }

@@ -6,11 +6,9 @@
 
 export { FlightSearchService } from './flight-search.service';
 
-// Smart Search (OneAgent SDK v3.0)
+// Smart Search types (service deprecated — use Gauss FlightAgent)
 export {
   smartFlightSearch,
-  initializeSmartSearch,
-  getSmartSearchBasePath,
   type SmartSearchResult,
   type FlightSearchInput as SmartSearchInput,
   type FlightSearchOutput as SmartSearchOutput,
