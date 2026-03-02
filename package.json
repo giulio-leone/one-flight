@@ -46,9 +46,7 @@
     "zod": "4.3.6"
   },
   "peerDependencies": {
-    "@giulio-leone/lib-ai": "workspace:*",
-    "@giulio-leone/lib-shared": "workspace:*",
-    "@giulio-leone/one-agent": "workspace:*"
+    "@giulio-leone/lib-shared": "workspace:*"
   },
   "devDependencies": {
     "@giulio-leone/agent-contracts": "workspace:*",
