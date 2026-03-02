@@ -1,28 +1,14 @@
 /**
  * Flight Agents
  *
- * Exposes OneAgent SDK 3.1-based flight search agent.
- * The agent is defined in sdk-agents/flight-search and uses the workflow/worker pattern.
- *
- * Usage:
- * ```typescript
- * import { executeFlightSearch } from '@giulio-leone/one-flight/agents';
- *
- * const result = await executeFlightSearch({
- *   flyFrom: ['MXP'],
- *   flyTo: ['BCN'],
- *   departureDate: '2025-02-15',
- * }, { userId: 'user_123' });
- * ```
+ * DEPRECATED: Legacy OneAgent SDK 3.1 agent. Flight search now uses Gauss agents.
+ * Kept for type exports and backward compatibility.
  */
 
-import { execute as sdkExecute } from '@giulio-leone/one-agent/framework/engine';
-import { createInMemoryAdapter } from '@giulio-leone/one-agent/framework/persistence';
-import type { PersistenceAdapter } from '@giulio-leone/agent-contracts';
-// Side-effect import to register schemas in the SDK registry
+// Legacy one-agent SDK imports removed
+// Side-effect import to register schemas (now no-ops)
 import '../sdk-agents/flight-search/schema';
 import type { FlightSearchInput as SDKFlightSearchInput, FlightSearchOutput } from '../sdk-agents/flight-search/schema';
-import path from 'path';
 
 // Export SDK-based types under distinct names to avoid conflict with ./types
 export type { FlightSearchOutput as SDKFlightSearchOutput };
@@ -46,33 +32,15 @@ export interface FlightExecutionResult<T = unknown> {
 
 export interface FlightAgentOptions {
   userId: string;
-  /** Prisma or in-memory adapter for persistence */
-  persistence?: PersistenceAdapter;
 }
 
 /**
  * Execute a flight search using the OneAgent SDK 3.1 workflow.
+ * @deprecated Use Gauss flight agent instead.
  */
 export async function executeFlightSearch(
   input: SDKFlightSearchInput,
   options: FlightAgentOptions
 ): Promise<FlightExecutionResult<FlightSearchOutput>> {
-  const persistence = options.persistence ?? createInMemoryAdapter();
-
-  // sdkExecute returns ExecutionResult | DurableExecutionResult (structurally identical
-  // to FlightExecutionResult) but cross-package type resolution prevents direct assignment.
-  const result = await sdkExecute<FlightSearchOutput>(
-    'sdk-agents/flight-search',
-    input,
-    {
-      userId: options.userId,
-      persistence,
-      basePath: path.resolve(__dirname, '..'),
-    }
-  );
-
-  return result as FlightExecutionResult<FlightSearchOutput>;
+  throw new Error('Legacy executeFlightSearch() is deprecated. Use Gauss flight agent instead.');
 }
-
-
-

@@ -11,5 +11,5 @@ export default defineConfig({
   dts: false,
   sourcemap: true,
   clean: true,
-  external: ['@giulio-leone/lib-ai', '@giulio-leone/lib-shared', '@giulio-leone/types'],
+  external: ['@giulio-leone/ai-config', '@giulio-leone/lib-shared', '@giulio-leone/types'],
 });

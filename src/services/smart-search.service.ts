@@ -8,7 +8,11 @@
  * Integrates with the centralized AI model system from admin settings.
  */
 
-import { execute } from '@giulio-leone/one-agent/framework/engine';
+// Legacy one-agent SDK execute() removed — migrating to Gauss Agent.run()
+// This function is kept for backward compatibility but the underlying SDK is deprecated.
+async function execute<T>(_agentPath: string, _input: unknown, _options?: unknown): Promise<{ success: boolean; output?: T; error?: { message: string; code: string }; meta: { executionId: string; duration: number; tokensUsed: number; costUSD: number }; workflowRunId?: string; workflowStatus?: string }> {
+  throw new Error('Legacy one-agent SDK execute() removed. Migrate to Gauss Agent.run().');
+}
 import { createLazyService } from '@giulio-leone/lib-shared';
 import type { FlightResult } from '../types';
 import type { FlightExecutionResult } from '../agents';
